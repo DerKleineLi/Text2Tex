@@ -1,43 +1,15 @@
 PALETTE = {
-    0: [255, 255, 255], # white  -  background
-    1: [204, 50, 50],   # red    -  old
+    0: [255, 255, 255],  # white  -  background
+    1: [204, 50, 50],  # red    -  old
     2: [231, 180, 22],  # yellow -  update
-    3: [45, 201, 55]    # green  -  new
+    3: [45, 201, 55],  # green  -  new
 }
 
-QUAD_WEIGHTS = {
-    0: 0, # background
-    1: 0.1,   # old
-    2: 0.5,  # update
-    3: 1    # new
-}
+QUAD_WEIGHTS = {0: 0, 1: 0.1, 2: 0.5, 3: 1}  # background  # old  # update  # new
 
 VIEWPOINTS = {
-    1: {
-        "azim": [
-            0
-        ],
-        "elev": [
-            0
-        ],
-        "sector": [
-            "front"
-        ]
-    },
-    2: {
-        "azim": [
-            0,
-            30
-        ],
-        "elev": [
-            0,
-            0
-        ],
-        "sector": [
-            "front",
-            "front"
-        ]
-    },
+    1: {"azim": [0], "elev": [0], "sector": ["front"]},
+    2: {"azim": [0, 30], "elev": [0, 0], "sector": ["front", "front"]},
     4: {
         "azim": [
             45,
@@ -56,25 +28,11 @@ VIEWPOINTS = {
             "front left",
             "back right",
             "back left",
-        ]
+        ],
     },
     6: {
-        "azim": [
-            0,
-            90,
-            270,
-            0,
-            180,
-            0
-        ],
-        "elev": [
-            0,
-            0,
-            0,
-            90,
-            0,
-            -90
-        ],
+        "azim": [0, 90, 270, 0, 180, 0],
+        "elev": [0, 0, 0, 90, 0, -90],
         "sector": [
             "front",
             "right",
@@ -82,33 +40,11 @@ VIEWPOINTS = {
             "top",
             "back",
             "bottom",
-        ]
+        ],
     },
     "shapenet": {
-        "azim": [
-            270,
-            315,
-            225,
-            0,
-            180,
-            45,
-            135,
-            90,
-            270,
-            270
-        ],
-        "elev": [
-            15,
-            15,
-            15,
-            15,
-            15,
-            15,
-            15,
-            15,
-            90,
-            -90
-        ],
+        "azim": [270, 315, 225, 0, 180, 45, 135, 90, 270, 270],
+        "elev": [15, 15, 15, 15, 15, 15, 15, 15, 90, -90],
         "sector": [
             "front",
             "front right",
@@ -120,7 +56,7 @@ VIEWPOINTS = {
             "back",
             "top",
             "bottom",
-        ]
+        ],
     },
     "objaverse": {
         "azim": [
@@ -133,7 +69,7 @@ VIEWPOINTS = {
             225,
             180,
             0,
-            0
+            0,
         ],
         "elev": [
             15,
@@ -145,7 +81,7 @@ VIEWPOINTS = {
             15,
             15,
             90,
-            -90
+            -90,
         ],
         "sector": [
             "front",
@@ -158,7 +94,77 @@ VIEWPOINTS = {
             "back",
             "top",
             "bottom",
-        ]
+        ],
+    },
+    "scene": {
+        "azim": [
+            0,
+            45,
+            315,
+            90,
+            270,
+            135,
+            225,
+            180,
+            0,
+            45,
+            315,
+            90,
+            270,
+            135,
+            225,
+            180,
+            22.5 + 0,
+            22.5 + 45,
+            22.5 + 315,
+            22.5 + 90,
+            22.5 + 270,
+            22.5 + 135,
+            22.5 + 225,
+            22.5 + 180,
+            0,
+            0,
+        ],
+        "elev": [
+            15,
+            15,
+            15,
+            15,
+            15,
+            15,
+            15,
+            15,
+            -15,
+            -15,
+            -15,
+            -15,
+            -15,
+            -15,
+            -15,
+            -15,
+            15,
+            15,
+            15,
+            15,
+            15,
+            15,
+            15,
+            15,
+            90,
+            -90,
+        ],
+        "sector": [
+            "front",
+            "front right",
+            "front left",
+            "right",
+            "left",
+            "back right",
+            "back left",
+            "back",
+            "top",
+            "bottom",
+        ],
     },
     12: {
         "azim": [
@@ -166,7 +172,6 @@ VIEWPOINTS = {
             315,
             135,
             225,
-
             0,
             45,
             315,
@@ -181,7 +186,6 @@ VIEWPOINTS = {
             0,
             0,
             0,
-
             45,
             45,
             45,
@@ -196,7 +200,6 @@ VIEWPOINTS = {
             "front left",
             "back right",
             "back left",
-
             "front",
             "front right",
             "front left",
@@ -205,7 +208,7 @@ VIEWPOINTS = {
             "back right",
             "back left",
             "back",
-        ]
+        ],
     },
     20: {
         "azim": [
@@ -213,7 +216,6 @@ VIEWPOINTS = {
             315,
             135,
             225,
-
             0,
             45,
             315,
@@ -222,7 +224,6 @@ VIEWPOINTS = {
             135,
             225,
             180,
-
             0,
             45,
             315,
@@ -237,7 +238,6 @@ VIEWPOINTS = {
             0,
             0,
             0,
-
             30,
             30,
             30,
@@ -246,7 +246,6 @@ VIEWPOINTS = {
             30,
             30,
             30,
-
             60,
             60,
             60,
@@ -261,7 +260,6 @@ VIEWPOINTS = {
             "front left",
             "back right",
             "back left",
-
             "front",
             "front right",
             "front left",
@@ -270,7 +268,6 @@ VIEWPOINTS = {
             "back right",
             "back left",
             "back",
-
             "front",
             "front right",
             "front left",
@@ -279,7 +276,7 @@ VIEWPOINTS = {
             "back right",
             "back left",
             "back",
-        ]
+        ],
     },
     36: {
         "azim": [
@@ -287,7 +284,6 @@ VIEWPOINTS = {
             315,
             135,
             225,
-
             0,
             45,
             315,
@@ -296,7 +292,6 @@ VIEWPOINTS = {
             135,
             225,
             180,
-
             0,
             45,
             315,
@@ -305,7 +300,6 @@ VIEWPOINTS = {
             135,
             225,
             180,
-
             22.5,
             337.5,
             67.5,
@@ -314,7 +308,6 @@ VIEWPOINTS = {
             247.5,
             157.5,
             202.5,
-
             22.5,
             337.5,
             67.5,
@@ -329,7 +322,6 @@ VIEWPOINTS = {
             0,
             0,
             0,
-
             30,
             30,
             30,
@@ -338,7 +330,6 @@ VIEWPOINTS = {
             30,
             30,
             30,
-
             60,
             60,
             60,
@@ -347,7 +338,6 @@ VIEWPOINTS = {
             60,
             60,
             60,
-
             15,
             15,
             15,
@@ -356,7 +346,6 @@ VIEWPOINTS = {
             15,
             15,
             15,
-
             45,
             45,
             45,
@@ -371,7 +360,6 @@ VIEWPOINTS = {
             "front left",
             "back right",
             "back left",
-
             "front",
             "front right",
             "front left",
@@ -380,7 +368,6 @@ VIEWPOINTS = {
             "back right",
             "back left",
             "back",
-
             "top front",
             "top right",
             "top left",
@@ -389,7 +376,6 @@ VIEWPOINTS = {
             "top right",
             "top left",
             "top back",
-
             "front right",
             "front left",
             "front right",
@@ -398,7 +384,6 @@ VIEWPOINTS = {
             "back left",
             "back right",
             "back left",
-
             "front right",
             "front left",
             "front right",
@@ -407,7 +392,7 @@ VIEWPOINTS = {
             "back left",
             "back right",
             "back left",
-        ]
+        ],
     },
     68: {
         "azim": [
@@ -415,7 +400,6 @@ VIEWPOINTS = {
             315,
             135,
             225,
-
             0,
             45,
             315,
@@ -424,7 +408,6 @@ VIEWPOINTS = {
             135,
             225,
             180,
-
             0,
             45,
             315,
@@ -433,7 +416,6 @@ VIEWPOINTS = {
             135,
             225,
             180,
-
             22.5,
             337.5,
             67.5,
@@ -442,7 +424,6 @@ VIEWPOINTS = {
             247.5,
             157.5,
             202.5,
-
             22.5,
             337.5,
             67.5,
@@ -451,7 +432,6 @@ VIEWPOINTS = {
             247.5,
             157.5,
             202.5,
-
             0,
             45,
             315,
@@ -460,7 +440,6 @@ VIEWPOINTS = {
             135,
             225,
             180,
-
             0,
             45,
             315,
@@ -469,7 +448,6 @@ VIEWPOINTS = {
             135,
             225,
             180,
-
             22.5,
             337.5,
             67.5,
@@ -478,7 +456,6 @@ VIEWPOINTS = {
             247.5,
             157.5,
             202.5,
-
             22.5,
             337.5,
             67.5,
@@ -486,14 +463,13 @@ VIEWPOINTS = {
             112.5,
             247.5,
             157.5,
-            202.5
+            202.5,
         ],
         "elev": [
             0,
             0,
             0,
             0,
-
             30,
             30,
             30,
@@ -502,7 +478,6 @@ VIEWPOINTS = {
             30,
             30,
             30,
-
             60,
             60,
             60,
@@ -511,7 +486,6 @@ VIEWPOINTS = {
             60,
             60,
             60,
-
             15,
             15,
             15,
@@ -520,7 +494,6 @@ VIEWPOINTS = {
             15,
             15,
             15,
-
             45,
             45,
             45,
@@ -529,7 +502,6 @@ VIEWPOINTS = {
             45,
             45,
             45,
-
             -30,
             -30,
             -30,
@@ -538,7 +510,6 @@ VIEWPOINTS = {
             -30,
             -30,
             -30,
-
             -60,
             -60,
             -60,
@@ -547,7 +518,6 @@ VIEWPOINTS = {
             -60,
             -60,
             -60,
-
             -15,
             -15,
             -15,
@@ -556,7 +526,6 @@ VIEWPOINTS = {
             -15,
             -15,
             -15,
-
             -45,
             -45,
             -45,
@@ -571,7 +540,6 @@ VIEWPOINTS = {
             "front left",
             "back right",
             "back left",
-
             "front",
             "front right",
             "front left",
@@ -580,7 +548,6 @@ VIEWPOINTS = {
             "back right",
             "back left",
             "back",
-
             "top front",
             "top right",
             "top left",
@@ -589,7 +556,6 @@ VIEWPOINTS = {
             "top right",
             "top left",
             "top back",
-
             "front right",
             "front left",
             "front right",
@@ -598,7 +564,6 @@ VIEWPOINTS = {
             "back left",
             "back right",
             "back left",
-
             "front right",
             "front left",
             "front right",
@@ -607,7 +572,6 @@ VIEWPOINTS = {
             "back left",
             "back right",
             "back left",
-
             "front",
             "front right",
             "front left",
@@ -616,7 +580,6 @@ VIEWPOINTS = {
             "back right",
             "back left",
             "back",
-
             "bottom front",
             "bottom right",
             "bottom left",
@@ -625,7 +588,6 @@ VIEWPOINTS = {
             "bottom right",
             "bottom left",
             "bottom back",
-
             "bottom front right",
             "bottom front left",
             "bottom front right",
@@ -634,7 +596,6 @@ VIEWPOINTS = {
             "bottom back left",
             "bottom back right",
             "bottom back left",
-
             "bottom front right",
             "bottom front left",
             "bottom front right",
@@ -643,6 +604,6 @@ VIEWPOINTS = {
             "bottom back left",
             "bottom back right",
             "bottom back left",
-        ]
-    }
+        ],
+    },
 }

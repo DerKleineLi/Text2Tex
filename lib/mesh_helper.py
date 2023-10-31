@@ -1,19 +1,9 @@
-import os
+import numpy as np
 import torch
 import trimesh
-
-import numpy as np
-
+from pytorch3d.io import load_obj, load_objs_as_meshes
 from sklearn.decomposition import PCA
-
 from torchvision import transforms
-
-from tqdm import tqdm
-
-from pytorch3d.io import (
-    load_obj,
-    load_objs_as_meshes
-)
 
 
 def compute_principle_directions(model_path, num_points=20000):
@@ -23,16 +13,16 @@ def compute_principle_directions(model_path, num_points=20000):
     pc -= np.mean(pc, axis=0, keepdims=True)
 
     principle_directions = PCA(n_components=3).fit(pc).components_
-    
+
     return principle_directions
 
 
-def init_mesh(model_path, device):
+def init_mesh(model_path, device, use_scene=False, mesh_center=torch.tensor([0, 0, 0])):
     print("=> loading target mesh...")
 
     # principle_directions = compute_principle_directions(model_path)
     principle_directions = None
-    
+
     _, faces, aux = load_obj(model_path, device=device)
     mesh = load_objs_as_meshes([model_path], device=device)
 
@@ -40,21 +30,34 @@ def init_mesh(model_path, device):
 
     # make sure mesh center is at origin
     bbox = mesh.get_bounding_boxes()
-    mesh_center = bbox.mean(dim=2).repeat(num_verts, 1)
-    mesh = apply_offsets_to_mesh(mesh, -mesh_center)
+    if not use_scene:
+        mesh_center = bbox.mean(dim=2).repeat(num_verts, 1)
+        mesh = apply_offsets_to_mesh(mesh, -mesh_center)  # TODO: not doing this
+    else:
+        mesh = apply_offsets_to_mesh(mesh, -mesh_center.to(device))
 
     # make sure mesh size is normalized
     box_size = bbox[..., 1] - bbox[..., 0]
     box_max = box_size.max(dim=1, keepdim=True)[0].repeat(num_verts, 3)
-    mesh = apply_scale_to_mesh(mesh, 1 / box_max)
+    if not use_scene:
+        mesh = apply_scale_to_mesh(mesh, 1 / box_max)  # TODO: not doing this
 
-    return mesh, mesh.verts_packed(), faces, aux, principle_directions, mesh_center, box_max
+    return (
+        mesh,
+        mesh.verts_packed(),
+        faces,
+        aux,
+        principle_directions,
+        mesh_center,
+        box_max,
+    )
 
 
 def apply_offsets_to_mesh(mesh, offsets):
     new_mesh = mesh.offset_verts(offsets)
 
     return new_mesh
+
 
 def apply_scale_to_mesh(mesh, scale):
     new_mesh = mesh.scale_verts(scale)
@@ -64,12 +67,12 @@ def apply_scale_to_mesh(mesh, scale):
 
 def adjust_uv_map(faces, aux, init_texture, uv_size):
     """
-        adjust UV map to be compatiable with multiple textures.
-        UVs for different materials will be decomposed and placed horizontally
+    adjust UV map to be compatiable with multiple textures.
+    UVs for different materials will be decomposed and placed horizontally
 
-        +-----+-----+-----+--
-        |  1  |  2  |  3  |
-        +-----+-----+-----+--
+    +-----+-----+-----+--
+    |  1  |  2  |  3  |
+    +-----+-----+-----+--
 
     """
 
@@ -88,8 +91,12 @@ def adjust_uv_map(faces, aux, init_texture, uv_size):
     new_verts_uvs[:, 0] /= num_materials
 
     init_texture_tensor = transforms.ToTensor()(init_texture)
-    init_texture_tensor = torch.cat([init_texture_tensor for _ in range(num_materials)], dim=-1)
-    init_texture = transforms.ToPILImage()(init_texture_tensor).resize((uv_size, uv_size))
+    init_texture_tensor = torch.cat(
+        [init_texture_tensor for _ in range(num_materials)], dim=-1
+    )
+    init_texture = transforms.ToPILImage()(init_texture_tensor).resize(
+        (uv_size, uv_size)
+    )
 
     return new_verts_uvs, init_texture
 
@@ -115,14 +122,12 @@ def update_face_angles(mesh, cameras, fragments):
     camera_center = cameras.get_camera_center()
 
     face_angles = get_angle(
-        face_normals, 
-        camera_center.repeat(face_normals.shape[0], 1)
-    ) # (F)
+        face_normals, camera_center.repeat(face_normals.shape[0], 1)
+    )  # (F)
 
     face_angles_rev = get_angle(
-        face_normals, 
-        -camera_center.repeat(face_normals.shape[0], 1)
-    ) # (F)
+        face_normals, -camera_center.repeat(face_normals.shape[0], 1)
+    )  # (F)
 
     face_angles = torch.minimum(face_angles, face_angles_rev)
 
@@ -130,6 +135,6 @@ def update_face_angles(mesh, cameras, fragments):
     visible_map = fragments.pix_to_face.unique()  # (num_visible_faces)
     invisible_mask = torch.ones_like(face_angles)
     invisible_mask[visible_map] = 0
-    face_angles[invisible_mask == 1] = 10000.  # angles of invisible faces are ignored
+    face_angles[invisible_mask == 1] = 10000.0  # angles of invisible faces are ignored
 
     return face_angles

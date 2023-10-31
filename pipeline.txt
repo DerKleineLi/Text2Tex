@@ -1,0 +1,4 @@
+1. combine meshes in stuff using meshlab
+2. create jobs, reference jobs/LivingRoom-36282
+3. run all jobs
+4. run combine.py

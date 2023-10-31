@@ -1,40 +1,39 @@
-import torch
-
-import numpy as np
-
-from sklearn.metrics.pairwise import cosine_similarity
-
-from pytorch3d.renderer import (
-    PerspectiveCameras,
-    look_at_view_transform
-)
-
 # customized
 import sys
+
+import numpy as np
+import torch
+from pytorch3d.renderer import FoVPerspectiveCameras, look_at_view_transform
+from sklearn.metrics.pairwise import cosine_similarity
+
 sys.path.append(".")
 
 from lib.constants import VIEWPOINTS
 
 # ---------------- UTILS ----------------------
 
+
 def degree_to_radian(d):
     return d * np.pi / 180
+
 
 def radian_to_degree(r):
     return 180 * r / np.pi
 
+
 def xyz_to_polar(xyz):
-    """ assume y-axis is the up axis """
-    
+    """assume y-axis is the up axis"""
+
     x, y, z = xyz
-    
+
     theta = 180 * np.arccos(z) / np.pi
     phi = 180 * np.arccos(y) / np.pi
 
     return theta, phi
 
+
 def polar_to_xyz(theta, phi, dist):
-    """ assume y-axis is the up axis """
+    """assume y-axis is the up axis"""
 
     theta = degree_to_radian(theta)
     phi = degree_to_radian(phi)
@@ -50,7 +49,7 @@ def polar_to_xyz(theta, phi, dist):
 
 
 def filter_viewpoints(pre_viewpoints: dict, viewpoints: dict):
-    """ return the binary mask of viewpoints to be filtered """
+    """return the binary mask of viewpoints to be filtered"""
 
     filter_mask = [0 for _ in viewpoints.keys()]
     for i, v in viewpoints.items():
@@ -59,8 +58,7 @@ def filter_viewpoints(pre_viewpoints: dict, viewpoints: dict):
         for _, pv in pre_viewpoints.items():
             x_pv, y_pv, z_pv = polar_to_xyz(pv["azim"], 90 - pv["elev"], pv["dist"])
             sim = cosine_similarity(
-                np.array([[x_v, y_v, z_v]]),
-                np.array([[x_pv, y_pv, z_pv]])
+                np.array([[x_v, y_v, z_v]]), np.array([[x_pv, y_pv, z_pv]])
             )[0, 0]
 
             if sim > 0.9:
@@ -69,26 +67,26 @@ def filter_viewpoints(pre_viewpoints: dict, viewpoints: dict):
     return filter_mask
 
 
-def init_viewpoints(mode, sample_space, init_dist, init_elev, principle_directions, 
-    use_principle=True, use_shapenet=False, use_objaverse=False):
-
+def init_viewpoints(
+    mode,
+    sample_space,
+    init_dist,
+    init_elev,
+    principle_directions,
+    use_principle=True,
+    use_shapenet=False,
+    use_objaverse=False,
+    use_scene=False,
+):
     if mode == "predefined":
-
-        (
-            dist_list, 
-            elev_list, 
-            azim_list, 
-            sector_list
-        ) = init_predefined_viewpoints(sample_space, init_dist, init_elev)
+        (dist_list, elev_list, azim_list, sector_list) = init_predefined_viewpoints(
+            sample_space, init_dist, init_elev
+        )
 
     elif mode == "hemisphere":
-
-        (
-            dist_list, 
-            elev_list, 
-            azim_list, 
-            sector_list
-        ) = init_hemisphere_viewpoints(sample_space, init_dist)
+        (dist_list, elev_list, azim_list, sector_list) = init_hemisphere_viewpoints(
+            sample_space, init_dist
+        )
 
     else:
         raise NotImplementedError()
@@ -97,38 +95,38 @@ def init_viewpoints(mode, sample_space, init_dist, init_elev, principle_directio
     view_punishments = [1 for _ in range(len(dist_list))]
 
     if use_principle:
-
         (
-            dist_list, 
-            elev_list, 
-            azim_list, 
+            dist_list,
+            elev_list,
+            azim_list,
             sector_list,
-            view_punishments
+            view_punishments,
         ) = init_principle_viewpoints(
-            principle_directions, 
-            dist_list, 
-            elev_list, 
-            azim_list, 
+            principle_directions,
+            dist_list,
+            elev_list,
+            azim_list,
             sector_list,
             view_punishments,
             use_shapenet,
-            use_objaverse
+            use_objaverse,
+            use_scene,
         )
 
     return dist_list, elev_list, azim_list, sector_list, view_punishments
 
 
 def init_principle_viewpoints(
-    principle_directions, 
-    dist_list, 
-    elev_list, 
-    azim_list, 
+    principle_directions,
+    dist_list,
+    elev_list,
+    azim_list,
     sector_list,
     view_punishments,
     use_shapenet=False,
-    use_objaverse=False
+    use_objaverse=False,
+    use_scene=False,
 ):
-
     if use_shapenet:
         key = "shapenet"
 
@@ -150,6 +148,16 @@ def init_principle_viewpoints(
         num_principle = 10
         pre_dist_list = [dist_list[0] for _ in range(num_principle)]
         pre_view_punishments = [0 for _ in range(num_principle)]
+    elif use_scene:
+        key = "scene"
+
+        pre_elev_list = [v for v in VIEWPOINTS[key]["elev"]]
+        pre_azim_list = [v for v in VIEWPOINTS[key]["azim"]]
+        pre_sector_list = [v for v in VIEWPOINTS[key]["sector"]]
+
+        num_principle = 24
+        pre_dist_list = [dist_list[0] for _ in range(num_principle)]
+        pre_view_punishments = [0 for _ in range(num_principle)]
     else:
         num_principle = 6
         pre_elev_list = [v for v in VIEWPOINTS[num_principle]["elev"]]
@@ -168,12 +176,11 @@ def init_principle_viewpoints(
 
 
 def init_predefined_viewpoints(sample_space, init_dist, init_elev):
-    
     viewpoints = VIEWPOINTS[sample_space]
 
     assert sample_space == len(viewpoints["sector"])
 
-    dist_list = [init_dist for _ in range(sample_space)] # always the same dist
+    dist_list = [init_dist for _ in range(sample_space)]  # always the same dist
     elev_list = [viewpoints["elev"][i] for i in range(sample_space)]
     azim_list = [viewpoints["azim"][i] for i in range(sample_space)]
     sector_list = [viewpoints["sector"][i] for i in range(sample_space)]
@@ -183,21 +190,21 @@ def init_predefined_viewpoints(sample_space, init_dist, init_elev):
 
 def init_hemisphere_viewpoints(sample_space, init_dist):
     """
-        y is up-axis
+    y is up-axis
     """
 
     num_points = 2 * sample_space
-    ga = np.pi * (3. - np.sqrt(5.))  # golden angle in radians
+    ga = np.pi * (3.0 - np.sqrt(5.0))  # golden angle in radians
 
     flags = []
-    elev_list = [] # degree
-    azim_list = [] # degree
+    elev_list = []  # degree
+    azim_list = []  # degree
 
     for i in range(num_points):
         y = 1 - (i / float(num_points - 1)) * 2  # y goes from 1 to -1
 
         # only take the north hemisphere
-        if y >= 0: 
+        if y >= 0:
             flags.append(True)
         else:
             flags.append(False)
@@ -215,7 +222,7 @@ def init_hemisphere_viewpoints(sample_space, init_dist):
     azim_list = [azim_list[i] for i in range(len(azim_list)) if flags[i]]
 
     dist_list = [init_dist for _ in elev_list]
-    sector_list = ["good" for _ in elev_list] # HACK don't define sector names for now
+    sector_list = ["good" for _ in elev_list]  # HACK don't define sector names for now
 
     return dist_list, elev_list, azim_list, sector_list
 
@@ -226,6 +233,6 @@ def init_hemisphere_viewpoints(sample_space, init_dist):
 def init_camera(dist, elev, azim, image_size, device):
     R, T = look_at_view_transform(dist, elev, azim)
     image_size = torch.tensor([image_size, image_size]).unsqueeze(0)
-    cameras = PerspectiveCameras(R=R, T=T, device=device, image_size=image_size)
+    cameras = FoVPerspectiveCameras(R=R, T=T, device=device, fov=60, degrees=True)
 
     return cameras
