@@ -17,11 +17,11 @@ export PYTHONPATH=$PYTHONPATH:/rhome/hli/workspace/Text2Tex
 
 # Run command
 python scripts/generate_texture.py \
-    --input_dir data/LivingRoom-36282/things \
-    --output_dir outputs/LivingRoom-36282/things/6_cabinet \
-    --obj_name 6_cabinet \
-    --obj_file 6_cabinet.obj \
-    --prompt "a cabinet in a classic style living room" \
+    --input_dir data/{scene_name}/stuff \
+    --output_dir {output_dir} \
+    --obj_name all \
+    --obj_file all.obj \
+    --prompt "{prompt}" \
     --a_prompt "best quality, high quality, extremely detailed, good geometry, high-res photo" \
     --n_prompt "deformed, extra digit, fewer digits, cropped, worst quality, low quality, smoke, shading, lighting, lumination, shadow, text in image, watermarks" \
     --add_view_to_prompt \
@@ -30,7 +30,7 @@ python scripts/generate_texture.py \
     --update_strength 0.3 \
     --view_threshold 0.1 \
     --blend 0 \
-    --dist 1 \
+    --dist 2.5 \
     --num_viewpoints 36 \
     --viewpoint_mode predefined \
     --use_principle \
@@ -39,4 +39,7 @@ python scripts/generate_texture.py \
     --seed 42 \
     --post_process \
     --device "2080" \
-    --use_objaverse # assume the mesh is normalized with y-axis as up
+    --camera_center_x {camera_center_x} \
+    --camera_center_y {camera_center_y} \
+    --camera_center_z {camera_center_z} \
+    --use_scene # assume the mesh is normalized with y-axis as up

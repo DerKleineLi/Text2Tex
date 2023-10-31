@@ -3,10 +3,11 @@ from pathlib import Path
 import cv2
 
 scene_name = "LivingRoom-36282"
+short_prompt = "classic"  # used for output_dir
 
 if __name__ == "__main__":
     input_dir = Path("data") / scene_name
-    output_dir = Path("outputs") / scene_name
+    output_dir = Path("outputs") / scene_name / short_prompt
 
     # input_stuff_dir = input_dir / "stuff"
 
