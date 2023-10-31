@@ -30,7 +30,7 @@ python scripts/generate_texture.py \
     --update_strength 0.3 \
     --view_threshold 0.1 \
     --blend 0 \
-    --dist 2.5 \
+    --dist {radius} \
     --num_viewpoints 36 \
     --viewpoint_mode predefined \
     --use_principle \

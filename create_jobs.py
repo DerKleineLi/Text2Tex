@@ -5,6 +5,7 @@ short_prompt = "classic"  # used for output_dir
 prompt_stuff = "a classic style living room"
 prompt_thing = "a {thing_type} in a classic style living room"
 camera_xyz = [0.85963, 1.1377, -4.6706]
+radius = 2.5
 
 stuff_pattern_file = "jobs/pattern/stuff.job"
 thing_pattern_file = "jobs/pattern/thing.job"
@@ -25,6 +26,7 @@ if __name__ == "__main__":
         scene_name=scene_name,
         output_dir=output_dir / "stuff",
         prompt=prompt_stuff,
+        radius=radius,
         camera_center_x=camera_xyz[0],
         camera_center_y=camera_xyz[1],
         camera_center_z=camera_xyz[2],
