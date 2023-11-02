@@ -1,0 +1,4 @@
+python combine.py \
+    --scene_name {scene_name} \
+    --short_prompt {short_prompt}
+

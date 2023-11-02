@@ -17,7 +17,7 @@ export PYTHONPATH=$PYTHONPATH:/rhome/hli/workspace/Text2Tex
 
 # Run command
 python scripts/generate_texture.py \
-    --input_dir data/{scene_name}/stuff \
+    --input_dir {input_dir} \
     --output_dir {output_dir} \
     --obj_name all \
     --obj_file all.obj \
@@ -43,3 +43,4 @@ python scripts/generate_texture.py \
     --camera_center_y {camera_center_y} \
     --camera_center_z {camera_center_z} \
     --use_scene # assume the mesh is normalized with y-axis as up
+
