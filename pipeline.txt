@@ -1,7 +1,6 @@
-1. combine meshes in stuff using meshlab, save as all.obj.
-2. place the scene in data/ with the file structure:
-    data
-    ├─<scene_name>
+1. place the scene in data/3D-FRONT_preprocessed/scenes/ with the file structure:
+    data/3D-FRONT_preprocessed/scenes
+    ├─<scene_id>/room_<id>/meshes
       ├─stuff
         ├─all.obj
         ├─<id>_<stuff_type>.png
@@ -11,5 +10,4 @@
         ├─<id>_<thing_type>.png
         ├─...
 2. create jobs using create_jobs.py
-3. run all jobs
-4. run combine.py
+3. run job

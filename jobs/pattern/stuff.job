@@ -1,4 +1,5 @@
 #!/bin/bash
+#SBATCH -p submit
 #SBATCH --job-name=text2tex
 #SBATCH --nodes=1
 #SBATCH --gpus=1
@@ -19,8 +20,8 @@ export PYTHONPATH=$PYTHONPATH:/rhome/hli/workspace/Text2Tex
 python scripts/generate_texture.py \
     --input_dir {input_dir} \
     --output_dir {output_dir} \
-    --obj_name all \
-    --obj_file all.obj \
+    --obj_name {stuff_name} \
+    --obj_file {stuff_name}.obj \
     --prompt "{prompt}" \
     --a_prompt "best quality, high quality, extremely detailed, good geometry, high-res photo" \
     --n_prompt "deformed, extra digit, fewer digits, cropped, worst quality, low quality, smoke, shading, lighting, lumination, shadow, text in image, watermarks" \
